@@ -7,6 +7,16 @@
 // message carries one record per spawned object, whatever its physics,
 // and an empty list when nothing is spawned.
 //
+// Ground truth is a debugging surface and stays inside the peppy
+// framework: harness tests, recorders and the evaluation of a trained
+// behaviour (did the grasp actually close on the object) read it. No
+// mcp_exposure/v1 document ever selects a member of this contract. An
+// MCP endpoint is the one surface a model drives on the real robot and
+// in simulation alike, and the real world has no ground truth to
+// publish, so a resource or tool built on this contract would exist
+// only in simulation and split the two. The mcp-hub's
+// test_no_simulation_ground_truth.py refuses such a target.
+//
 // Poses are world frame: position in metres, orientation a unit
 // quaternion [x, y, z, w]. Velocities are world axes, taken at the
 // object's origin: linear in m/s, angular in rad/s. Static and
