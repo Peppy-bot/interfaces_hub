@@ -1,0 +1,82 @@
+// The ground truth of the objects a simulation engine spawned through
+// scene_control: where each one is right now, how fast it moves and what
+// it touches, streamed on the engine's own state cadence. A consumer can
+// judge a task from this (the cube came to rest in the tray, the gripper
+// is touching the can) without holding a pairing or polling
+// get_objects_list. Object ids are the ones scene_control minted; a
+// message carries one record per spawned object, whatever its physics,
+// and an empty list when nothing is spawned.
+//
+// Poses are world frame: position in metres, orientation a unit
+// quaternion [x, y, z, w]. Velocities are world axes, taken at the
+// object's origin: linear in m/s, angular in rad/s. Static and
+// visual-only objects report a fixed pose and zero velocities.
+//
+// object_contacts lists one record per (object, contact): a contact
+// between two spawned objects appears twice, once from each side.
+// other names the other side: the other object's id when it is a
+// spawned object, else the implementer's name of the body the other
+// geom belongs to (a robot link, "world" for the floor). normal points
+// out of the object toward the other body; force is the normal contact
+// force in newtons. Visual-only objects never contact.
+{
+  peppy_schema: "contract/v1",
+  manifest: {
+    name: "object_state",
+    tag: "v1",
+  },
+  interfaces: {
+    topics: [
+      {
+        name: "object_states",
+        // High-frequency stream where only the latest snapshot matters;
+        // occasional drops are acceptable.
+        qos_profile: "sensor_data",
+        message_format: {
+          // Implementer-side capture time of this snapshot.
+          timestamp: "time",
+          // One record per spawned object, in the implementer's order.
+          objects: {
+            $type: "array",
+            $items: {
+              $type: "object",
+              object_id: "string",
+              // The asset it was spawned from.
+              asset_id: "string",
+              // "dynamic", "static" or "none", as spawned.
+              physics: "string",
+              position: { $type: "array", $items: "f64", $length: 3 },
+              orientation: { $type: "array", $items: "f64", $length: 4 },
+              linear_velocity: { $type: "array", $items: "f64", $length: 3 },
+              angular_velocity: { $type: "array", $items: "f64", $length: 3 },
+            },
+          },
+        },
+      },
+      {
+        name: "object_contacts",
+        qos_profile: "sensor_data",
+        message_format: {
+          timestamp: "time",
+          // One record per (spawned object, contact).
+          contacts: {
+            $type: "array",
+            $items: {
+              $type: "object",
+              // The spawned object of this record.
+              object_id: "string",
+              // The other side (see the header).
+              other: "string",
+              // The contact point, world frame, metres.
+              position: { $type: "array", $items: "f64", $length: 3 },
+              // Unit normal out of the object toward the other body.
+              normal: { $type: "array", $items: "f64", $length: 3 },
+              // Normal contact force, newtons.
+              force: "f64",
+            },
+          },
+        },
+      },
+    ],
+  },
+}

@@ -36,6 +36,11 @@
         path: "robot/motor_health.json5"
       }
     },
+    object_state: {
+      v1: {
+        path: "simulation/object_state.json5"
+      }
+    },
     openarm_governor_control: {
       v1: {
         path: "openarm/governor_control.json5"
