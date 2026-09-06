@@ -16,6 +16,11 @@
         path: "robot/component_ready.json5"
       }
     },
+    contact_state: {
+      v1: {
+        path: "simulation/contact_state.json5"
+      }
+    },
     episode_recording: {
       v1: {
         path: "recording/episode_recording.json5"
@@ -69,6 +74,11 @@
     scene_control: {
       v1: {
         path: "simulation/scene_control.json5"
+      }
+    },
+    sensor_readout: {
+      v1: {
+        path: "simulation/sensor_readout.json5"
       }
     }
   }
