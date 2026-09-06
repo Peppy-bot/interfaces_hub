@@ -14,9 +14,11 @@
 //
 // One record per (body, contact point): a contact appears twice, once
 // from each side, so "everything touching X" is one filter on body.
-// Bodies are named as object_state names them: a spawned object by its
-// object_id, anything else by the implementer's body name ("world" for
-// the floor). World frame, metres, newtons. normal points out of body
+// A side is named as object_state names a spawned object, by its
+// object_id; any other body by the implementer's body name; a geom of
+// the world body by the geom's own name (a floor plane "floor", a
+// backdrop piece "backdrop/table/0"), "world" only when it has none.
+// World frame, metres, newtons. normal points out of body
 // toward other; force is the normal contact force; penetration is how
 // deep the two surfaces overlap, 0 when they only touch. A step with no
 // contact carries an empty list.
